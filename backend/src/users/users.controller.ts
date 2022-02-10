@@ -12,9 +12,9 @@ export class UsersController {
     res.status(HttpStatus.OK).json(allUser);
   }
 
-  @Get(':username')
-  async findById(@Param('username') username: string, @Res() res: Response) {
-    const user = await this.userService.findByUserName(username);
+  @Get(':userId')
+  async findById(@Param('userId') userId: string, @Res() res: Response) {
+    const user = await this.userService.findById(userId);
     res.status(HttpStatus.OK).json(user);
   }
 }

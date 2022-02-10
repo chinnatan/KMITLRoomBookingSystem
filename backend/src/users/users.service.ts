@@ -1,31 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryColumn,
+  Repository,
+} from 'typeorm';
 
-export type User = any;
+@Entity('User')
+export class UserEntity {
+  @PrimaryColumn({ type: 'varchar', length: 30 })
+  UserId: string;
+  @Column()
+  Fullname: string;
+  @Column()
+  Email: string;
+}
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
+  constructor(
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+  ) {}
 
-  async findAll(): Promise<User> {
-    return this.users;
+  findAll(): Promise<UserEntity[]> {
+    return this.userRepository.find();
   }
 
-  async findByUserName(username: string): Promise<User> {
-    const user = this.users.find((user) => user.username === username);
-    if (user === undefined) {
-      throw new TypeError('The value was promised to always be there!');
-    }
-    return user;
+  findById(userId: string): Promise<UserEntity> {
+    return this.userRepository.findOne(userId);
   }
 }
